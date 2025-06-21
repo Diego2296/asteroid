@@ -1,10 +1,19 @@
 from constants import *
 import pygame
-from player import Playerls
+from player import Player
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)  # Create a player instance
+  
+#Create groups
+updatable = pygame.sprite.Group() # A group for updatable objects
+drawable = pygame.sprite.Group() # A group for drawable objects
+
+# Set both groups as containers for the player
+Player.containers = (updatable, drawable)  
+
+# Create a player instance
+player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 def main():
     running = True  # Variable to control the main loop
     clock = pygame.time.Clock()  # Create a clock to manage frame rate
@@ -17,10 +26,13 @@ def main():
                 break
         if not running:
             break
-        # Here you would typically update game state and draw everything
-        # For now, we will just fill the screen with black
+        # Filling the screen with black
         screen.fill((0, 0, 0))
-        player.draw(screen)  # Fill the screen with black
+        # Update all updatables
+        updatable.update(dt)
+        # Draw all drawables
+        for obj in drawable:
+            obj.draw(screen) 
         pygame.display.flip() # Update the display
         dt = clock.tick(60) / 1000  # Limit the frame rate to 60 FPS
 
